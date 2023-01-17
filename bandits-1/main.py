@@ -3,6 +3,7 @@ import gym_environments  # important
 import gym
 import sys
 from tabulate import tabulate
+import numpy as np
 
 ''' Author = David Cedres -- 27340336
 
@@ -38,10 +39,10 @@ def run_model(alpha, epsilon):
 # prepare table
 table = []
 
-for alpha in range(0, 10, 1):
-    for epsilon in range(0, 10, 1):
-        agent = run_model(alpha/10, epsilon/10)
-        table.append([alpha/10, epsilon/10, agent.estimations[0],
+for alpha in np.linspace(0, 1, 100):
+    for epsilon in np.linspace(0, 10, 100):
+        agent = run_model(alpha, epsilon)
+        table.append([alpha, epsilon, agent.estimations[0],
                      agent.estimations[1], agent.total_reward])
 
 env.close()
@@ -49,5 +50,12 @@ env.close()
 table.sort(key=lambda x: -x[4])
 subtable = table[0:10]
 
-print(tabulate(subtable, ["Alpha", "Epsilon", "Arm0 Avg", "Arm1 Avg",
-      "Collected"], tablefmt="github"))
+print(f'{len(table)} combinations tried')
+
+print(tabulate(subtable, [
+    "Alpha",
+    "Epsilon",
+    "Arm0 Avg",
+    "Arm1 Avg",
+    "Collected"
+], tablefmt="github"))
